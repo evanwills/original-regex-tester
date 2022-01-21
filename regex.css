@@ -1,0 +1,420 @@
+body {
+	font-family: arial, helvetica, sans-serif;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 0% 1em;
+}
+label span , #butt label {
+	position: absolute;
+	top: -1000em;
+	left: -1000em;
+}
+#input textarea {
+	min-height: 25em;
+}
+#input ul li:first-child label {
+	display: block;
+}
+#regexes div {
+	position: relative;
+}
+#regexes div p {
+	display: none;
+	margin-top:1em;
+}
+p.note {
+	text-indent: -3.5em;
+	margin-left: 3.5em;
+	margin-bottom: 2em;
+	line-height: 1em;
+}
+li.bad-regex {
+	-webkit-box-shadow: 0em 0em 0.5em #f00;
+	-moz-box-shadow: 0em 0em 0.5em #f00;
+	-ms-box-shadow: 0em 0em 0.5em #f00;
+	-o-box-shadow: 0em 0em 0.5em #f00;
+	box-shadow: 0em 0em 0.5em #f00;
+}
+#regexes div:hover p {
+	display: block;
+}
+
+.frInputWrap {
+	top: -1.5em;
+}
+.frInputWrap label {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 140%;
+	font-weight: bold;
+	padding-right: 0.5em;
+}
+.frInputWrap input , .frInputWrap textarea {
+	width: 100%;
+	border: 0.1em solid #ddd;
+	border-radius: 0.3em;
+	padding: 0.3em 0.5em;
+	margin-top: 0.2em;
+	font-family: monospace;
+}
+.checkbox-check {
+	position: relative;
+	top: -1em;
+}
+.checkbox-check label {
+	font-weight: normal !important;
+}
+.checkbox-check label:first-child {
+	padding-right: 2em;
+}
+.checkbox-check input[type='text'] {
+	font-weight:normal;
+	font-family: monospace;
+	padding-left: 0.2em;
+	padding-right: 0.2em;
+}
+label.disabled , li.disabled label {
+	font-weight: normal;
+	color: #ccc;
+}
+
+header h1 , header h2 {
+	line-height: 1em;
+	margin: 0%;
+	text-align: center;
+}
+header h1 {
+	padding: 0.5em 0% 0.2em;
+}
+header h2 {
+	font-size: 133%;
+	font-weight: normal;
+	white-space: nowrap;
+}
+fieldset h2 {
+	font-size: 128.6%;
+	font-weight: bold;
+}
+
+.hiding {
+	position: absolute;
+	top: -10000em;
+	left: -10000em;
+}
+.remove { display:none !important;}
+.regexes {
+	padding-top: 1em;
+}
+.regexes li {
+	margin-bottom: 1.75em;
+	margin-left: 1em;
+	padding-left: 0%;
+}
+input.find , textarea.find {
+	background-color: #dfd;
+}
+input.replace , textarea.replace {
+	background-color: #eef;
+}
+textarea {
+	width: 100%;
+	height: 20em;
+	display:block;
+	margin-right: 1em;
+}
+ol.regexes {
+	padding-left: 0%;
+}
+.inline {
+	margin: 0;
+	padding: 0;
+}
+.inline li {
+	list-style-type: none;
+	display: inline;
+	margin: 0;
+	padding: 0 1em 0 0;
+	white-space: nowrap;
+}
+
+
+.btn.b-left {
+	border-top-left-radius: 1.5em;
+	border-bottom-left-radius: 1.5em;
+}
+.btn.b-right {
+	border-top-right-radius: 1.5em;
+	border-bottom-right-radius: 1.5em;
+}
+
+
+dl.table-def
+{
+	line-height: 1.2em
+}
+dl.table-def dt { margin-top:  0%; margin-right: 0%; margin-bottom: -1.4em; margin-left: 0%; font-weight: bold; }
+dl.table-def dd { padding-top: 0%; padding-right: 0%; padding-bottom: 0%; padding-left: 1em; margin-top: 0%; margin-right: 0%; margin-bottom: 0.5em; }
+dl.table-def.close dd { margin-bottom: 0%; }
+
+dl.table-def.X2 dt { width: 2em; } dl.table-def.X2 dd { margin-left: 2em; }
+dl.table-def.X3 dt { width: 3em; } dl.table-def.X3 dd { margin-left: 3em; }
+dl.table-def.X4 dt { width: 4em; } dl.table-def.X4 dd { margin-left: 4em; }
+dl.table-def.X5 dt { width: 5em; } dl.table-def.X5 dd { margin-left: 5em; }
+dl.table-def.X6 dt { width: 6em; } dl.table-def.X6 dd { margin-left: 6em; }
+dl.table-def.X7 dt { width: 7em; } dl.table-def.X7 dd { margin-left: 7em; }
+dl.table-def.X8 dt { width: 8em; } dl.table-def.X8 dd { margin-left: 8em; }
+
+section#results
+{
+	position: relative;
+	font-size: 90%;
+	padding: 0.5em 0%;
+}
+section#results h2
+{
+	padding: 0.5em 1em 0.5em 0.5em;
+	margin: 0%;
+	color: rgb( 0 , 75  , 0 );
+}
+section#results ol
+{
+	padding: 1em;
+}
+/*
+section#results:hover
+{
+	z-index: 10;
+	background-color: rgb( 0 , 75  , 0 );
+}
+section#results:hover h1
+{
+	color: #fff;
+	padding: 0.5em 1em;
+}
+
+section#results:hover ol
+{
+	display: block;
+}
+*/
+.results ol li
+{
+	border-top: 0.1em solid #000;
+	padding-top: 1.5em;
+	padding-bottom: 0.5em;
+	list-style-type: lower-alpha;
+}
+.results ol li:nth-child(2n,1)
+{
+	background-color: rgba( 200 , 200 , 255 , 0.90 );
+}
+
+.results ol li:first-of-type
+{
+	border-top: none;
+	background-color: transparent;
+	margin-top: 1em;
+}
+.results ol li ol
+{
+	position: static;
+	background-color: transparent;
+	padding: 0%;
+	border: none;
+	margin-top: -1em;
+	max-height: none;
+	-webkit-border-bottom-left-radius: 0%;
+	 -khtml-border-bottom-left-radius: 0%;
+	   -moz-border-bottom-left-radius: 0%;
+	    -ms-border-bottom-left-radius: 0%;
+	     -o-border-bottom-left-radius: 0%;
+		border-bottom-left-radius: 0%;
+	-webkit-border-bottom-right-radius: 0%;
+	 -khtml-border-bottom-right-radius: 0%;
+	   -moz-border-bottom-right-radius: 0%;
+	    -ms-border-bottom-right-radius: 0%;
+	     -o-border-bottom-right-radius: 0%;
+		border-bottom-right-radius: 0%;
+	-webkit-box-shadow: none;
+	 -kthml-box-shadow: none;
+	   -moz-box-shadow: none;
+	    -ms-box-shadow: none;
+	     -o-box-shadow: none;
+		box-shadow: none;
+}
+ol.multi-sample li
+{
+	list-style-type: lower-alpha;
+	border: none;
+	padding-top: 0.5em;
+	padding-bottom: 0%;
+	border-top: 0.1em dashed #888;
+}
+ ol.single-sample li
+,.multi-sample ol li
+{
+	list-style-type: decimal;
+	border: none;
+	padding-top: 0.5em;
+	padding-bottom: 0%;
+	border-top: 0.1em dotted #888;
+}
+ ol.single-sample li:first-of-type
+,.multi-sample ol li:first-of-type
+{
+	padding-top: 0em;
+	margin-top: 0%;
+	border-top: none;
+}
+
+
+dd.matched ol li
+{
+	list-style-type: lower-roman;
+	margin: 0% 0% 0% 2em;
+	padding: 0%;
+	border-top: none;
+}
+dd.matched ol li ol
+{
+	margin-top: 0%;
+	padding-bottom: 0.5em;
+}
+dd.matched ol.matched-parts li
+{
+	list-style-type: decimal;
+	margin-top: 0%;
+	margin-bottom: 0%;
+	padding-top: 0%;
+	padding-bottom: 0%;
+}
+
+dd.matched ol.matched-parts.named
+{
+	counter-reset: mblock;
+}
+dd.matched ol.matched-parts.named li
+{
+	list-style: none;
+	display: block;
+	margin-left: 0%;
+	padding-left: 0%;
+	counter-increment: mblock;
+}
+dd.matched ol.matched-parts.named li
+{
+	display: table-row;
+}
+dd.matched ol.matched-parts.named li:before
+{
+	content: counter(mblock) '. ';
+	padding-right: 0.5em;
+}
+dd.matched ol.matched-parts.named li span.name
+{
+	font-family: monospace;
+	font-weight: bold;
+	padding-right: 0.5em;
+	display: table-cell;
+}
+dd.matched ol.matched-parts.named li span.value
+{
+	display: table-cell;
+}
+dd.matched ol.matched-parts.named li span.value:before
+{
+	content: ': ';
+}
+
+.regex-pattern , .error_high {
+	font-family: monospace;
+}
+
+dt.dud, dt.dud + dd
+{
+	color: #aaa;
+}
+span.ok , span.error , span.problem
+{
+	padding: 0.3em 0.1em;
+}
+span.ok:first-of-type , span.error:first-of-type , span.problem:first-of-type
+{
+	padding-left: 0.6em;
+}
+span.ok:last-of-type , span.error:last-of-type , span.problem:last-of-type
+{
+	padding-right: 0.6em;
+}
+span.ok { background-color: #0f0; color: #00f; }
+span.problem { background-color: #ff0; color: #f00; }
+span.error { background-color: #f00; color: #ff0; }
+
+.space
+{
+	color: #aaa;
+	font-size: 0.6rem;
+	font-style: italic;
+}
+span.whole
+{
+	font-size: 120%;
+
+}
+span.whole:after
+{
+	content: ' (whole string)';
+	padding-left: 0.5em;
+	color: #55b;
+	font-size: 83.3%;
+}
+
+@media (max-width: 52em) {
+	.frInputWrap {
+		display: table;
+		width: 100%;
+	}
+	.frInputWrap label {
+		display: table-cell;
+		width: 20%;
+		font-size:100%;
+	}
+	.has-textarea .frInputWrap label {
+		vertical-align: top;
+	}
+	.frInputWrap input {
+		display: table-cell;
+	}
+	.frInputWrap .hiding {
+		position: static;
+	}
+	body { padding-bottom: 7em; }
+	#butt {
+		position: fixed;
+		bottom: 0%;
+		left: 0%;
+		right: 0%;
+		padding-bottom: 1em;
+		padding-top: 1em;
+		background-color: rgba( 220 , 220 , 220 , 0.7 );
+		text-align: center;
+	}
+	#butt legend { display: none; }
+	#butt ul {
+		text-align: center;
+	}
+	a[rel='sidebar'] {
+		display: none;
+	}
+}
+@media ( max-width: 19em ) {
+	.frInputWrap .hiding {
+		position: absolute;
+	}
+	.frInputWrap input , .frInputWrap textarea {
+		display: block;
+	}
+}
+textarea.form-control.find, textarea.form-control.replace {
+	height: 10em;
+}
