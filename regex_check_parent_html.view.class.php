@@ -208,6 +208,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             ,$ws_trim_pos_after          // [25] WS_TRIM_POS_AFTER
         );
 
+        // debug('$ws_trim_pos_before', $ws_trim_pos_before, $find, $replace);
         return str_replace(
             $find,
             $replace,
