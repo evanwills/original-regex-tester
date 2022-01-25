@@ -104,9 +104,7 @@ class RegexTest_ParentModel
             ) {
                 $tmp = $this->sample;
                 if ($this->wsTrim === true && $this->wsTrimAfter === false) {
-                    debug($this->sample, $tmp, $this->output);
                     $tmp = trim($tmp);
-                    debug($this->sample, $tmp, $this->output);
                 }
                 $output = $tmp_output = $tmp;
                 unset($tmp);
