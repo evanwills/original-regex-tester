@@ -180,13 +180,13 @@ class RegexTest_ChildModel
     {
         if (is_array($sample)) {
             for ($a = 0; $a < count($sample); $a += 1) {
-                $this->report[] = $this->regex->report($sample[$a]);
-                $sample[$a] = $this->regex->getOutput($sample[$a]);
+                $this->_report[] = $this->_regex->report($sample[$a]);
+                $sample[$a] = $this->_regex->getOutput($sample[$a]);
             }
             return $sample;
         } else {
-            $this->report[] = $this->regex->report($sample);
-            return $this->regex->getOutput($sample);
+            $this->_report[] = $this->_regex->report($sample);
+            return $this->_regex->getOutput($sample);
         }
     }
 
@@ -197,7 +197,7 @@ class RegexTest_ChildModel
      */
     public function getErrors()
     {
-        return array_merge($this->_errors, $this->regex->getErrors());
+        return array_merge($this->_errors, $this->_regex->getErrors());
     }
 
     /**

@@ -37,14 +37,14 @@
 						</li>
 						<li>
 							<label class="{{WS_TRIM_LABEL_CLS}}">
-								<input type="radio" name="ws_action" id="ws_trim_pos_before" value="true" tabindex="20" {{WS_TRIM_POS_BEFORE}}/>
+								<input type="radio" name="ws_action" id="ws_trim_pos_before" value="before" tabindex="20" {{WS_TRIM_BEFORE}}/>
 								<span>Trim white space from sample</span> before processing
 							</label>
 							or
 						</li>
 						<li>
 							<label class="{{WS_TRIM_LABEL_CLS}}">
-								<input type="radio" name="ws_action" id="ws_trim_pos_after" value="false" tabindex="21" {{WS_TRIM_POS_AFTER}}/>
+								<input type="radio" name="ws_action" id="ws_trim_pos_after" value="after" tabindex="21" {{WS_TRIM_AFTER}}/>
 								<span>Trim white space from sample</span> after processing
 							</label>
 						</li>
@@ -71,7 +71,7 @@
 
 				<fieldset id="regexes" class="tab-pane fade in{{ACTIVE_REGEX}}">
 					<legend>Regular Expressions</legend>
-					<p class="note"><strong>Note:</strong> <span class="warning">Do not</span> use opening and closing delimiters. If regexes are sent to the server, back ticks (`) will automatically inserted as opening and closing delimiters.</p>
+					<p class="note"><strong>Note:</strong> <span class="warning">Do not</span> use opening and closing delimiters. If regexes are sent to the server, back ticks (<code>{{REGEX_DELIM}}</code>) will automatically inserted as opening and closing delimiters.</p>
 					<ol class="regexes">
 {{PAIRS}}
 					</ol>

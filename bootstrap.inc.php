@@ -98,6 +98,68 @@ if (!function_exists('debug')) {
 // END: debug include
 // ==================================================================
 
+/**
+ * Convert a string to camelCase
+ *
+ * @param string $input string to be converted
+ *
+ * @return string camelCase string
+ */
+function toCamel($input)
+{
+    return preg_replace_callback(
+        '/[-_ ]([a-z])/i',
+        function ($matches) {
+            return strtoupper($matches[1]);
+        },
+        $input
+    );
+}
+
+/**
+ * Convert function escaped white space sequences to normal white
+ * space characters
+ *
+ * @param string $input String to be converted
+ *
+ * @return string Converted string
+ */
+function escaped2ws($input)
+{
+    return preg_replace_callback(
+        '`(?<!\\\\)\\\\([rnt])`',
+        function ($matches) {
+            switch ($matches[1]) {
+            case 'n':
+                return "\n";
+
+            case 'r':
+                return "\r";
+
+            case 't':
+                return "\t";
+            }
+        },
+        $input
+    );
+}
+
+/**
+ * Convert function normal white space characters to escaped white
+ * space sequences
+ *
+ * @param string $input String to be converted
+ *
+ * @return string Converted string
+ */
+function ws2escaped($input)
+{
+    return str_replace(
+        array("\n", "\r", "\t"),
+        array('\n', '\r', '\t'),
+        $input
+    );
+}
 
 // ==================================================================
 

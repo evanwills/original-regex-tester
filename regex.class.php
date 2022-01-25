@@ -131,7 +131,7 @@ class Regex
         $this->highlighted = '<span class="ok">' .
                                  htmlspecialchars($find) .
                              '</span>';
-        $this->replace = $this->fixLineEnd($replace);
+        $this->replace = escaped2ws($replace);
         $this->errors = $errors;
 
         if (is_null(self::$MicroTime)) {

@@ -27,19 +27,19 @@ class RegexTest_ParentModel
     protected $child_view_class = 'RegexTest_ChildViewHtml';
     protected $sample = '';
     protected $wsTrim = false;
-    protected $wsActionAfter = true;
+    protected $wsTrimAfter = true;
     protected $splitSample = false;
     protected $splitDelim = '\n';
     protected $regexes = array();
     protected $output = '';
-    protected $output_is_different = false;
-    protected $test_only = true;
+    protected $outputIsDifferent = false;
+    protected $testOnly = true;
     protected $dummy = true;
     protected $request_url = '';
     protected $sampleLen = 300;
     protected $sampleLenOk = true;
     protected $matchedLen = 300;
-    protected $matchedLen_ok = true;
+    protected $matchedLenOk = true;
     protected $regexDelim = '`';
     protected $regexDelimOk = true;
 
@@ -64,10 +64,10 @@ class RegexTest_ParentModel
                 : false;
 
             if (isset($_POST['ws_action']) && $_POST['ws_action'] == 'before') {
-                $this->wsActionAfter = false;
+                $this->wsTrimAfter = false;
             }
 
-            if ($this->wsTrim === true && $this->wsActionAfter === false) {
+            if ($this->wsTrim === true && $this->wsTrimAfter === false) {
                 $this->sample = trim($this->sample);
             }
 
@@ -103,8 +103,10 @@ class RegexTest_ParentModel
                 && !empty($_POST['regex'])
             ) {
                 $tmp = $this->sample;
-                if ($this->wsTrim === true && $this->wsActionAfter === false) {
+                if ($this->wsTrim === true && $this->wsTrimAfter === false) {
+                    debug($this->sample, $tmp, $this->output);
                     $tmp = trim($tmp);
+                    debug($this->sample, $tmp, $this->output);
                 }
                 $output = $tmp_output = $tmp;
                 unset($tmp);
@@ -136,7 +138,7 @@ class RegexTest_ParentModel
                     $output = array($output);
                 }
 
-                if ($this->wsTrim === true && $this->wsActionAfter === false) {
+                if ($this->wsTrim === true && $this->wsTrimAfter === false) {
                     for ($a = 0; $a < count($output); $a += 1) {
                         $output[$a] = trim($output[$a]);
                     }
@@ -146,25 +148,9 @@ class RegexTest_ParentModel
                     $find = isset($_POST['regex'][$a]['find'])
                         ? $_POST['regex'][$a]['find']
                         : '';
-                    $replace =  preg_replace_callback(
-                        '`(?<!\\\\)\\\\([rnt])`',
-                        function ($matches) {
-                            switch ($matches[1]) {
-                            case 'n':
-                                return "\n";
-                                break;
-                            case 'r':
-                                return "\r";
-                                break;
-                            case 't':
-                                return "\t";
-                                break;
-                            }
-                        },
-                        isset($_POST['regex'][$a]['replace'])
-                            ? $_POST['regex'][$a]['replace']
-                            : ''
-                    );
+                    $replace =  isset($_POST['regex'][$a]['replace'])
+                        ? $_POST['regex'][$a]['replace']
+                        : '';
                     $modifiers = isset($_POST['regex'][$a]['modifiers'])
                         ? $_POST['regex'][$a]['modifiers']
                         : '';
@@ -189,49 +175,20 @@ class RegexTest_ParentModel
                     $output = $output[0];
                 }
                 if ($tmp_output !== $output) {
-                    if ($this->wsTrim === true && $this->wsActionAfter === true) {
+                    if ($this->wsTrim === true && $this->wsTrimAfter === true) {
                         $output = trim($output);
                     }
                     $this->output = $output;
-                    $this->output_is_different = true;
+                    $this->outputIsDifferent = true;
                 }
             } else {
                 $this->regexes[] = new RegexTest_ChildModel('', '', '', false);
             }
             if (isset($_POST['submit_replace'])) {
-                $this->test_only = false;
+                $this->testOnly = false;
             }
-            $this->request_uri = $_SERVER['REQUEST_URI'];
+            $this->requestUri = $_SERVER['REQUEST_URI'];
         }
-    }
-
-    /**
-     * Convert white space escape sequences into their normal which
-     * space characters
-     *
-     * @param string $input String to be converted
-     *
-     * @return string
-     */
-    private function _fixWhiteSpace($input)
-    {
-        return preg_replace_callback(
-            '`(?<!\\\\)\\\\([rnt])`',
-            function ($matches) {
-                switch ($matches[1]) {
-                case 'n':
-                    return "\n";
-                    break;
-                case 'r':
-                    return "\r";
-                    break;
-                case 't':
-                    return "\t";
-                    break;
-                }
-            },
-            $input
-        );
     }
 
     /**
@@ -243,12 +200,32 @@ class RegexTest_ParentModel
      */
     public function getProp($prop_name)
     {
-        if (is_string($prop_name) && $prop_name != ''
-            && property_exists($this, $prop_name)
+        $prop = toCamel($prop_name);
+        if (is_string($prop) && $prop != ''
+            && property_exists($this, $prop)
         ) {
-            return $this->$prop_name;
+            return $this->$prop;
         } else {
-            // throw
+            if (is_string($prop)) {
+                if ($prop !== '') {
+                    throw new Exception(
+                        self::class.' does not contain the '.
+                        'property "'.$prop.'"'
+                    );
+                } else {
+                    throw new Exception(
+                        self::class.'::getProp expects only '.
+                        'parameter $prop_name to be a non-empty '.
+                        'string'
+                    );
+                }
+            } else {
+                throw new Exception(
+                    self::class.'::getProp expects only '.
+                    'parameter $prop_name to be a non-empty '.
+                    'string. '.gettype($prop_name).' given.'
+                );
+            }
         }
     }
 
@@ -265,7 +242,7 @@ class RegexTest_ParentModel
             $this->sampleLenOk = false;
         }
         if ($len == 'matched') {
-            $this->matchedLen_ok = false;
+            $this->matchedLenOk = false;
         }
     }
 }

@@ -33,8 +33,8 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
         $output = '';
         $regexes = $this->model->getProp('regexes');
         $sampleLen_cls = '';
-        $matched_len_cls = '';
-        $regex_delim_cls = '';
+        $matchedLen_cls = '';
+        $regexDelim_cls = '';
         $active = '';
 
         $show_output = false;
@@ -43,7 +43,7 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
             $pairs .= $this->child_view->getRegexFieldsetItem(0, $regexes[0]);
             $active = 'sample';
         } else {
-            if ($this->model->getProp('test_only') === false
+            if ($this->model->getProp('testOnly') === false
                 && $this->model->getProp('output_is_different')
             ) {
                 $show_output = true;
@@ -101,43 +101,35 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
             }
         }
 
-        if ($this->model->getProp('ws_trim_action_after')) {
-            $ws_trim_true = ' checked="checked"';
-            $ws_trim_false = '';
+        if ($this->model->getProp('ws_trim_after')) {
+            $wsTrimAfter = ' checked="checked"';
+            $wsTrimBefore = '';
         } else {
-            $ws_trim_true = '';
-            $ws_trim_false = ' checked="checked"';
+            $wsTrimAfter = '';
+            $wsTrimBefore = ' checked="checked"';
         }
 
         if ($this->model->getProp('ws_trim')) {
-            $ws_trim_cb = ' checked="checked"';
-            $ws_trim_label_cls = '';
+            $wsTrim_cb = ' checked="checked"';
+            $wsTrim_label_cls = '';
         } else {
-            $ws_trim_cb = '';
-            $ws_trim_true .= ' disabled="disabled"';
-            $ws_trim_false .= ' disabled="disabled"';
-            $ws_trim_label_cls = 'disabled';
-        }
-
-        if ($this->model->getProp('ws_action_after')) {
-            $ws_trim_pos_before = ' checked="checked"';
-            $ws_trim_pos_after = '';
-        } else {
-            $ws_trim_pos_before = '';
-            $ws_trim_pos_after = ' checked="checked"';
+            $wsTrim_cb = '';
+            $wsTrimBefore .= ' disabled="disabled"';
+            $wsTrimAfter .= ' disabled="disabled"';
+            $wsTrim_label_cls = 'disabled';
         }
 
         if ($this->model->getProp('split_sample')) {
-            $split_sample_cb = ' checked="checked"';
-            $split_delim_disabled = '';
-            $split_delim_label_cls = '';
+            $splitSample_cb = ' checked="checked"';
+            $splitDelim_disabled = '';
+            $splitDelim_label_cls = '';
         } else {
-            $split_delim_disabled = ' disabled="disabled"';
-            $split_sample_cb = '';
-            $split_delim_label_cls = 'disabled';
+            $splitDelim_disabled = ' disabled="disabled"';
+            $splitSample_cb = '';
+            $splitDelim_label_cls = 'disabled';
         }
 
-        $split_delim = $this->model->getProp('split_delim');
+        $splitDelim = $this->model->getProp('split_delim');
 
         switch ($active) {
         case 'sample':
@@ -161,19 +153,19 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
             $active_regex_cls = '';
         }
 
-        if (!$this->model->getProp('sample_len_ok')) {
+        if (!$this->model->getProp('sampleLenOk')) {
             $sampleLen_cls = ' class="error"';
         }
 
-        if (!$this->model->getProp('matched_len_ok')) {
-            $matched_len_cls = ' class="error"';
+        if (!$this->model->getProp('matchedLenOk')) {
+            $matchedLen_cls = ' class="error"';
         }
-        if (!$this->model->getProp('regex_delim_ok')) {
-            $regex_delim_cls = ' class="error"';
+        if (!$this->model->getProp('regexDelimOk')) {
+            $regexDelim_cls = ' class="error"';
         }
 
         $find = array(
-             '{{REQUEST_URI}}'           //  [0] $this->model->getProp('request_uri')
+             '{{REQUEST_URI}}'           //  [0] $this->model->getProp('requestUri')
             ,'{{PAIRS}}'                 //  [1] $pairs
             ,'{{RESULTS}}'               //  [2] $results
             ,'{{EXTRA_TABS}}'            //  [3] $extra_tabs
@@ -183,26 +175,24 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
             ,'{{ACTIVE_SAMPLE_CLS}}'     //  [7] $active_sample_cls
             ,'{{ACTIVE_REGEX}}'          //  [8] $active_regex
             ,'{{ACTIVE_REGEX_CLS}}'      //  [9] $active_regex_cls
-            ,'{{SPLIT_SAMPLE_CB}}'       // [10]$split_sample_cb
-            ,'{{SPLIT_DELIM}}'           // [11] $split_delim
-            ,'{{SPLIT_DELIM_LABEL_CLS}}' // [12] $split_delim_disabled
-            ,'{{SPLIT_DELIM_DISABLED}}'  // [13] $split_delim_label_cls
-            ,'{{WS_TRIM_CB}}'            // [14] $ws_trim_cb
-            ,'{{WS_TRIM_LABEL_CLS}}'     // [15] $ws_trim_true_label_cls
-            ,'{{WS_TRIM_TRUE}}'          // [16] $ws_trim_true
-            ,'{{WS_TRIM_FALSE}}'         // [17] $ws_trim_false
+            ,'{{SPLIT_SAMPLE_CB}}'       // [10]$splitSample_cb
+            ,'{{SPLIT_DELIM}}'           // [11] $splitDelim
+            ,'{{SPLIT_DELIM_LABEL_CLS}}' // [12] $splitDelim_disabled
+            ,'{{SPLIT_DELIM_DISABLED}}'  // [13] $splitDelim_label_cls
+            ,'{{WS_TRIM_CB}}'            // [14] $wsTrim_cb
+            ,'{{WS_TRIM_LABEL_CLS}}'     // [15] $wsTrim_true_label_cls
+            ,'{{WS_TRIM_BEFORE}}'        // [16] $wsTrimBefore
+            ,'{{WS_TRIM_AFTER}}'         // [17] $wsTrimAfter
             ,'{{SAMPLE_LEN}}'            // [18] $this->model->get_static_prop('sample_len')
             ,'{{SAMPLE_LEN_CLS}}'        // [19] $sampleLen_cls
             ,'{{MATCHED_LEN}}'           // [20] $this->model->get_static_prop('matched_len')
-            ,'{{MATCHED_LEN_CLS}}'       // [21] $matched_len_cls
+            ,'{{MATCHED_LEN_CLS}}'       // [21] $matchedLen_cls
             ,'{{REGEX_DELIM}}'           // [22] $this->model->get_static_prop('regex_delim')
-            ,'{{REGEX_DELIM_CLS}}'       // [23] $regex_delim_cls
-            ,'{{WS_TRIM_POS_BEFORE}}'    // [24] $ws_trim_pos_before
-            ,'{{WS_TRIM_POS_AFTER}}'     // [25] $ws_trim_pos_after
+            ,'{{REGEX_DELIM_CLS}}'       // [23] $regexDelim_cls
         );
 
         $replace = array(
-             $this->model->getProp('request_uri') // [0] 'REQUEST_URI'
+             $this->model->getProp('requestUri') // [0] 'requestUri'
             ,$pairs                      //  [1] 'PAIRS'
             ,$results                    //  [2] 'RESULTS'
             ,$extra_tabs                 //  [3] 'EXTRA_TABS'
@@ -212,29 +202,27 @@ class RegexTest_ParentViewHtml extends RegexTest_ParentView
             ,$active_sample_cls          //  [7] ACTIVE_SAMPLE_CLS
             ,$active_regex               //  [8] ACTIVE_REGEX
             ,$active_regex_cls           //  [9] ACTIVE_REGEX_CLS
-            ,$split_sample_cb            // [10] SPLIT_SAMPLE_CB
-            ,$split_delim                // [11] SPLIT_DELIM
-            ,$split_delim_label_cls      // [12] SPLIT_DELIM_DISABLED
-            ,$split_delim_disabled       // [13] SPLIT_DELIM_LABEL_CLS
-            ,$ws_trim_cb                 // [14] WS_TRIM_CB
-            ,$ws_trim_label_cls          // [15] WS_TRIM_TRUE_LABEL_CLS
-            ,$ws_trim_true               // [16] WS_TRIM_TRUE
-            ,$ws_trim_false              // [17] WS_TRIM_FALSE
-            ,$this->model->getProp('sample_len') // [18] SAMPLE_LEN
-            ,$sampleLen_cls             // [19] SAMPLE_LEN_CLS
-            ,$this->model->getProp('matched_len') // [19] MATCHED_LEN
-            ,$matched_len_cls            // [21] MATCHED_LEN_CLS
-            ,$this->model->getProp('regex_delim') // [20] DELIM_CLOSE
-            ,$regex_delim_cls            // [23] REGEX_DELIM_CLS
-            ,$ws_trim_pos_before         // [24] WS_TRIM_POS_BEFORE
-            ,$ws_trim_pos_after          // [25] WS_TRIM_POS_AFTER
+            ,$splitSample_cb             // [10] SPLIT_SAMPLE_CB
+            ,$splitDelim                 // [11] SPLIT_DELIM
+            ,$splitDelim_label_cls       // [12] SPLIT_DELIM_DISABLED
+            ,$splitDelim_disabled        // [13] SPLIT_DELIM_LABEL_CLS
+            ,$wsTrim_cb                  // [14] WS_TRIM_CB
+            ,$wsTrim_label_cls           // [15] WS_TRIM_TRUE_LABEL_CLS
+            ,$wsTrimBefore               // [16] WS_TRIM_TRUE
+            ,$wsTrimAfter                // [17] WS_TRIM_FALSE
+            ,$this->model->getProp('sampleLen') // [18] SAMPLE_LEN
+            ,$sampleLen_cls              // [19] SAMPLE_LEN_CLS
+            ,$this->model->getProp('matchedLen') // [19] MATCHED_LEN
+            ,$matchedLen_cls             // [21] MATCHED_LEN_CLS
+            ,$this->model->getProp('regexDelim') // [20] DELIM_CLOSE
+            ,$regexDelim_cls             // [23] REGEX_DELIM_CLS
         );
 
-        // debug('$ws_trim_pos_before', $ws_trim_pos_before, $find, $replace);
+        // debug('$wsTrimBefore', $wsTrimBefore, $find, $replace);
         return str_replace(
             $find,
             $replace,
-            file_get_contents('regex_check_template.html')
+            file_get_contents('RegexTest_template.html')
         );
     }
 

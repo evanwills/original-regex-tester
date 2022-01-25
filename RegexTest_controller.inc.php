@@ -32,21 +32,23 @@ require_once 'RegexTest_Child'.$outputType.'.view.class.php';
 
 
 $model = new RegexTest_ParentModel();
-$classname = 'RegexTest_ChildView'.$outputType;
-$child_view = new $classname($model);
+$className = 'RegexTest_ChildView'.$outputType;
+// debug($className);
+$childView = new $className($model);
 
-if (!$classname::setLen($model->getProp('sampleLen'), 'sample')) {
+if (!$className::setLen($model->getProp('sampleLen'), 'sample')) {
     $model->setLenNotOk('sample');
 }
-if (!$classname::setLen($model->getProp('matchedLen'), 'matched')) {
+if (!$className::setLen($model->getProp('matchedLen'), 'matched')) {
     $model->setLenNotOk('matched');
 }
 
-$classname = 'RegexTest_ParentView'.$outputType;
+$className = 'RegexTest_ParentView'.$outputType;
+// debug($className);
 if ($model->getProp('splitSample')) {
-    $classname .= 'Multi';
+    $className .= 'Multi';
 }
 
-$parent_view = new $classname($model, $child_view);
+$parent_view = new $className($model, $childView);
 
 echo $parent_view->getOutput();
