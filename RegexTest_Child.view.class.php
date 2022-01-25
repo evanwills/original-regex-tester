@@ -1,49 +1,49 @@
 <?php
 
-abstract class regex_check_child_view
+abstract class RegexTest_ChildView
 {
 
-    static protected $sample_len = 300;
-    static protected $matched_len = 300;
+    static protected $sampleLen = 300;
+    static protected $matchedLen = 300;
 
 
-    abstract public function get_regex_fieldset_item(
+    abstract public function getRegexFieldsetItem(
         $index,
-        regex_check_child_model $model
+        RegexTest_ChildModel $model
     );
 
     /**
      * Format information generated regex::report() and any feedback
      * from adding/updating/deleting an archive
      *
-     * @param regex_check_child_model $model Object containing all
+     * @param RegexTest_ChildModel $model Object containing all
      *                                       info on regex processed
      *
      * @return string Formatted contents of report
      *                (including archiver feedback)
      */
-    abstract public function format_report(regex_check_child_model $model);
+    abstract public function formatReport(RegexTest_ChildModel $model);
 
-    public static function set_len($input, $type = false)
+    public static function setLen($input, $type = false)
     {
         if (is_int($input) && $input > 6) {
             if ($type !== 'matched') {
-                self::$sample_len = $input;
+                self::$sampleLen = $input;
             }
             if ($type !== 'sample') {
-                self::$matched_len = $input;
+                self::$matchedLen = $input;
             }
             return true;
         }
         return false;
     }
 
-    protected function trim_string($input, $type = 'sample')
+    protected function trimString($input, $type = 'sample')
     {
         if ($type === 'matched') {
-            $len = self::$matched_len;
+            $len = self::$matchedLen;
         } else {
-            $len = self::$sample_len;
+            $len = self::$sampleLen;
         }
         if (strlen($input) > $len) {
             $len -= 3;

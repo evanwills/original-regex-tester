@@ -1,14 +1,14 @@
 <?php
 
 
-class regex_check_parent_view
+class RegexTest_ParentView
 {
     protected $mode = null;
     protected $child_view = null;
 
     public function __construct(
-        regex_check_parent_model $model,
-        regex_check_child_view $view
+        RegexTest_ParentModel $model,
+        RegexTest_ChildView $view
     ) {
         $this->model = $model;
         $this->child_view = $view;

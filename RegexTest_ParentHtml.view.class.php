@@ -1,38 +1,60 @@
 <?php
+/**
+ * This file contains two view classes for rendering out of a regex
+ * test request
+ *
+ * PHP Version 5.4, 7.x, 8.0
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
+ */
 
-
-
-class regex_check_parent_view_html extends regex_check_parent_view
+/**
+ * Check Parent View HTML prepares output for rendering in HTML
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
+ */
+class RegexTest_ParentViewHtml extends RegexTest_ParentView
 {
     protected $result_wrapper_class = 'single-sample';
-    public function get_output()
+
+    public function getOutput()
     {
         $results = '';
         $pairs = '';
         $extra_tabs = '';
         $output = '';
-        $regexes = $this->model->get_prop('regexes');
-        $sample_len_cls = '';
+        $regexes = $this->model->getProp('regexes');
+        $sampleLen_cls = '';
         $matched_len_cls = '';
         $regex_delim_cls = '';
         $active = '';
 
         $show_output = false;
 
-        if ($this->model->get_prop('dummy')) {
-            $pairs .= $this->child_view->get_regex_fieldset_item(0, $regexes[0]);
+        if ($this->model->getProp('dummy')) {
+            $pairs .= $this->child_view->getRegexFieldsetItem(0, $regexes[0]);
             $active = 'sample';
         } else {
-            if ($this->model->get_prop('test_only') === false && $this->model->get_prop('output_is_different')) {
+            if ($this->model->getProp('test_only') === false
+                && $this->model->getProp('output_is_different')
+            ) {
                 $show_output = true;
             }
 
             for ($a = 0; $a < count($regexes); $a += 1) {
-                $pairs .= $this->child_view->get_regex_fieldset_item(
+                $pairs .= $this->child_view->getRegexFieldsetItem(
                     $a, $regexes[$a]
                 );
-                $results .= $this->get_output_results(
-                    $this->child_view->format_report($regexes[$a])
+                $results .= $this->getOutputResults(
+                    $this->child_view->formatReport($regexes[$a])
                 );
             }
             if ($results !== '') {
@@ -72,14 +94,14 @@ class regex_check_parent_view_html extends regex_check_parent_view
                 <fieldset id="output" class="tab-pane fade active in">
                     <legend>Replacement</legend>
                     <textarea id="replace" name="replace" readonly="readonly">'.
-                        htmlspecialchars($this->model->get_prop('output')).
+                        htmlspecialchars($this->model->getProp('output')).
                     '</textarea>
                 </fieldset>
 ';
             }
         }
 
-        if ($this->model->get_prop('ws_trim_action_after')) {
+        if ($this->model->getProp('ws_trim_action_after')) {
             $ws_trim_true = ' checked="checked"';
             $ws_trim_false = '';
         } else {
@@ -87,7 +109,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             $ws_trim_false = ' checked="checked"';
         }
 
-        if ($this->model->get_prop('ws_trim')) {
+        if ($this->model->getProp('ws_trim')) {
             $ws_trim_cb = ' checked="checked"';
             $ws_trim_label_cls = '';
         } else {
@@ -97,7 +119,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             $ws_trim_label_cls = 'disabled';
         }
 
-        if ($this->model->get_prop('ws_action_after')) {
+        if ($this->model->getProp('ws_action_after')) {
             $ws_trim_pos_before = ' checked="checked"';
             $ws_trim_pos_after = '';
         } else {
@@ -105,7 +127,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             $ws_trim_pos_after = ' checked="checked"';
         }
 
-        if ($this->model->get_prop('split_sample')) {
+        if ($this->model->getProp('split_sample')) {
             $split_sample_cb = ' checked="checked"';
             $split_delim_disabled = '';
             $split_delim_label_cls = '';
@@ -115,7 +137,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             $split_delim_label_cls = 'disabled';
         }
 
-        $split_delim = $this->model->get_prop('split_delim');
+        $split_delim = $this->model->getProp('split_delim');
 
         switch ($active) {
         case 'sample':
@@ -139,23 +161,23 @@ class regex_check_parent_view_html extends regex_check_parent_view
             $active_regex_cls = '';
         }
 
-        if (!$this->model->get_prop('sample_len_ok')) {
-            $sample_len_cls = ' class="error"';
+        if (!$this->model->getProp('sample_len_ok')) {
+            $sampleLen_cls = ' class="error"';
         }
 
-        if (!$this->model->get_prop('matched_len_ok')) {
+        if (!$this->model->getProp('matched_len_ok')) {
             $matched_len_cls = ' class="error"';
         }
-        if (!$this->model->get_prop('regex_delim_ok')) {
+        if (!$this->model->getProp('regex_delim_ok')) {
             $regex_delim_cls = ' class="error"';
         }
 
         $find = array(
-             '{{REQUEST_URI}}'           //  [0] $this->model->get_prop('request_uri')
+             '{{REQUEST_URI}}'           //  [0] $this->model->getProp('request_uri')
             ,'{{PAIRS}}'                 //  [1] $pairs
             ,'{{RESULTS}}'               //  [2] $results
             ,'{{EXTRA_TABS}}'            //  [3] $extra_tabs
-            ,'{{SAMPLE}}'                //  [4] $this->model->get_prop('sample')
+            ,'{{SAMPLE}}'                //  [4] $this->model->getProp('sample')
             ,'{{OUTPUT}}'                //  [5] $output
             ,'{{ACTIVE_SAMPLE}}'         //  [6]$active_sample
             ,'{{ACTIVE_SAMPLE_CLS}}'     //  [7] $active_sample_cls
@@ -170,7 +192,7 @@ class regex_check_parent_view_html extends regex_check_parent_view
             ,'{{WS_TRIM_TRUE}}'          // [16] $ws_trim_true
             ,'{{WS_TRIM_FALSE}}'         // [17] $ws_trim_false
             ,'{{SAMPLE_LEN}}'            // [18] $this->model->get_static_prop('sample_len')
-            ,'{{SAMPLE_LEN_CLS}}'        // [19] $sample_len_cls
+            ,'{{SAMPLE_LEN_CLS}}'        // [19] $sampleLen_cls
             ,'{{MATCHED_LEN}}'           // [20] $this->model->get_static_prop('matched_len')
             ,'{{MATCHED_LEN_CLS}}'       // [21] $matched_len_cls
             ,'{{REGEX_DELIM}}'           // [22] $this->model->get_static_prop('regex_delim')
@@ -180,11 +202,11 @@ class regex_check_parent_view_html extends regex_check_parent_view
         );
 
         $replace = array(
-             $this->model->get_prop('request_uri') // [0] 'REQUEST_URI'
+             $this->model->getProp('request_uri') // [0] 'REQUEST_URI'
             ,$pairs                      //  [1] 'PAIRS'
             ,$results                    //  [2] 'RESULTS'
             ,$extra_tabs                 //  [3] 'EXTRA_TABS'
-            ,htmlspecialchars($this->model->get_prop('sample')) // [4] 'SAMPLE'
+            ,htmlspecialchars($this->model->getProp('sample')) // [4] 'SAMPLE'
             ,$output                     //  [5] OUTPUT
             ,$active_sample              //  [6] ACTIVE_SAMPLE
             ,$active_sample_cls          //  [7] ACTIVE_SAMPLE_CLS
@@ -198,11 +220,11 @@ class regex_check_parent_view_html extends regex_check_parent_view
             ,$ws_trim_label_cls          // [15] WS_TRIM_TRUE_LABEL_CLS
             ,$ws_trim_true               // [16] WS_TRIM_TRUE
             ,$ws_trim_false              // [17] WS_TRIM_FALSE
-            ,$this->model->get_prop('sample_len') // [18] SAMPLE_LEN
-            ,$sample_len_cls             // [19] SAMPLE_LEN_CLS
-            ,$this->model->get_prop('matched_len') // [19] MATCHED_LEN
+            ,$this->model->getProp('sample_len') // [18] SAMPLE_LEN
+            ,$sampleLen_cls             // [19] SAMPLE_LEN_CLS
+            ,$this->model->getProp('matched_len') // [19] MATCHED_LEN
             ,$matched_len_cls            // [21] MATCHED_LEN_CLS
-            ,$this->model->get_prop('regex_delim') // [20] DELIM_CLOSE
+            ,$this->model->getProp('regex_delim') // [20] DELIM_CLOSE
             ,$regex_delim_cls            // [23] REGEX_DELIM_CLS
             ,$ws_trim_pos_before         // [24] WS_TRIM_POS_BEFORE
             ,$ws_trim_pos_after          // [25] WS_TRIM_POS_AFTER
@@ -216,18 +238,18 @@ class regex_check_parent_view_html extends regex_check_parent_view
         );
     }
 
-    protected function get_output_results( $input )
+    protected function getOutputResults($input)
     {
         return $input;
     }
 }
 
-class regex_check_parent_view_html_multi extends regex_check_parent_view_html
+class RegexTest_ParentViewHtmlMulti extends RegexTest_ParentViewHtml
 {
 
     protected $result_wrapper_class = 'multi-sample';
 
-    protected function get_output_results( $input )
+    protected function getOutputResults($input)
     {
         return '
                 <li>

@@ -1,7 +1,7 @@
 <?php
-
 /**
- * @class regex allows you to test regular expressions.
+ * This file contains a collection of four PREG Regex related classes
+ * for testing, matching, find/replacing and getting regex errors
  *
  * The primary aim of this set of classes is to provide feedback to
  * users about their regular expressions in systems that allow users
@@ -11,8 +11,33 @@
  * expression is of no use to anybody and should not be stored by a
  * system. Also these classes incur an additional overhead
  * unnecessary when using a valid regex.
+ *
+ * PHP Version 5.4, 7.x, 8.0
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
  */
-class regex
+
+/**
+ * Regex is a factory class with a public factory method which
+ * returns the appropriate child regex class
+ *
+ * This class provides the basic infrastructure for the child
+ * regex classes along with a static method for validating regular
+ * expressions.
+ *
+ * PHP Version 5.4, 7.x, 8.0
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
+ */
+class Regex
 {
     const REGEX_FIND_ESCAPED = '/^(.).*?(?<=(?<=\\\\\\\\)|(?<!\\\\))\1(.*)$/is';
 
@@ -48,26 +73,26 @@ class regex
      * List of errors caused at a programatic level by bad input
      * values
      *
-     * @var array $input_errors
+     * @var array $inputErrors
      */
-    protected $input_errors = array();
+    protected $inputErrors = array();
 
     /**
      * Maximum number of characters displayed in the 'sample' index
      * in the report output array
      *
-     * @var integer $sample_len
+     * @var integer $sampleLen
      */
-    protected static $sample_len = 300;
+    protected static $sampleLen = 300;
 
     /**
      * Number of characters from the start of a string shown before
      * appending an elipsus to the truncated sample string and then
      * displayed in the 'sample' index in the report output array
      *
-     * @var integer $sample_len_dot
+     * @var integer $sampleLenDot
      */
-    protected static $sample_len_dot = 297;
+    protected static $sampleLenDot = 297;
 
     /**
      * An object for doing calculations with large floating point
@@ -84,7 +109,7 @@ class regex
      *                        matching
      * @param string $replace Replacement string
      * @param array  $errors  If there are errors in the regex then
-     *                        regex_error::__construct() will use the
+     *                        RegexError::__construct() will use the
      *                        error array to generate useful feedback
      *                        about what is wrong with the regex
      */
@@ -93,7 +118,9 @@ class regex
         // NOTE: It makes no sence within the context of this class
         //       to allow the 'e' (evaluate) modifier so we is
         //       stripped from modifiers part of the regex
-        if (empty($errors) && preg_match(self::REGEX_FIND_ESCAPED, $find, $matches)) {
+        if (empty($errors)
+            && preg_match(self::REGEX_FIND_ESCAPED, $find, $matches)
+        ) {
             $find = preg_replace(
                 '/' . $matches[2] . '$/',
                 str_replace('e', '', $matches[2]),
@@ -104,11 +131,11 @@ class regex
         $this->highlighted = '<span class="ok">' .
                                  htmlspecialchars($find) .
                              '</span>';
-        $this->replace = $this->fix_line_end($replace);
+        $this->replace = $this->fixLineEnd($replace);
         $this->errors = $errors;
 
         if (is_null(self::$MicroTime)) {
-            self::$MicroTime = MicroTime::get_obj();
+            self::$MicroTime = MicroTime::getObj();
         }
     }
 
@@ -120,10 +147,10 @@ class regex
      * @param string $replace Pattern/string to replace matched string
      *
      * @return object appropriate regex object:
-     *                * If regex has a replace a regex_replace object
+     *                * If regex has a replace a RegexReplace object
      *                  is returned
-     *                * If regex has an error a regex_error object is
-     *                  returned otherwise a regex_match object is
+     *                * If regex has an error a RegexError object is
+     *                  returned otherwise a RegexMatch object is
      *                  returned
      */
     public static function process($find, $replace = false)
@@ -141,24 +168,31 @@ class regex
         }
 
         // turn PHP errors on or clear errors
-        $tmp = self::valid_regex($find);
+        $tmp = self::validRegex($find);
         if ($tmp !== true) {
             $errors = array_merge($errors, $tmp);
         }
 
         if (empty($errors)) {
             if ($replace === false) {
-                return new regex_match($find);
+                return new RegexMatch($find);
             } else {
-                return new regex_replace($find, $replace);
+                return new RegexReplace($find, $replace);
             }
         } else {
-            return new regex_error($find, $replace, $errors);
+            return new RegexError($find, $replace, $errors);
         }
     }
 
-
-    static public function valid_regex($find)
+    /**
+     * Check whther a given regex is valid
+     *
+     * @param string $find Regex string to be validated
+     *
+     * @return true|array TRUE if regex is valid. Array of error
+     *                    message strings if regex is not valid
+     */
+    static public function validRegex($find)
     {
         $find = trim($find);
         $errors = array();
@@ -227,11 +261,11 @@ class regex
      */
     public function report($sample)
     {
-        $sample_str = $this->valid_input($sample);
+        $sample_str = $this->validInput($sample);
         if ($sample_str === false) {
             $sample_str = '';
         }
-        return $this->error(
+        return array_merge(
             array(
                 'output' => array($sample),
                 'time' => '-1',
@@ -240,20 +274,21 @@ class regex
                 'sample' => $sample_str,
                 'replace' => $this->replace,
                 'type' => $this->type
-            )
+            ),
+            $this->getErrors()
         );
     }
 
     /**
      * Get whether the object holds a valid regex
      *
-     * NOTE: regex_match and regex_replace contain only valid regular
-     *       expressions, where-as regex_error contains only invalid
+     * NOTE: RegexMatch and RegexReplace contain only valid regular
+     *       expressions, where-as RegexError contains only invalid
      *       regular expressions)
      *
      * @return boolean
      */
-    public function is_valid()
+    public function isValid()
     {
         return true;
     }
@@ -280,7 +315,7 @@ class regex
      *               {integer} 'count'  Number of matches the regex
      *                                  had on the sample
      */
-    public function get_output($sample)
+    public function getOutput($sample)
     {
         return $sample;
     }
@@ -292,7 +327,7 @@ class regex
      *
      * @return array an array of strings with error messages.
      */
-    public function get_errors()
+    public function getErrors()
     {
         return array(
             'error_message' => 'No errors',
@@ -305,14 +340,15 @@ class regex
     /**
      * Get the regex this object holds
      *
-     * @param boolean $highlighted
+     * @param boolean $highlighted Whether or not to return to syntax
+     *                             highlight returned regex
      *
      * @return string regular expression used in the object
      */
-    public function get_regex($highlighted = false)
+    public function getRegex($highlighted = false)
     {
         if ($highlighted === true) {
-            return $this->find;
+            return $this->highlighted;
         } else {
             return $this->find;
         }
@@ -323,22 +359,31 @@ class regex
      *
      * @return string replacement string used in the object (if any)
      */
-    public function get_replace()
+    public function getReplace()
     {
         return $this->replace;
     }
 
-    public function valid_input($input)
+    /**
+     * Check whether a given method's input is a string
+     *
+     * @param mixed $input Input to be validated
+     *
+     * @return string
+     */
+    public function validInput($input)
     {
         if (!is_string($input)) {
             $backtr = debug_backtrace();
             $obj =  $backtr[1]['class'];
             $func = $backtr[1]['function'];
-            $this->input_errors[] = "$obj::$func() first paramater must be a string. " . gettype($input) . ' given!';
+            $this->inputErrors[] = "$obj::$func() first paramater ".
+                                   "must be a string. ".
+                                   gettype($input).' given!';
             return false;
         } else {
-            if (strlen($input) > regex::$sample_len) {
-                return substr($input, regex::$sample_len_dot) . '...';
+            if (strlen($input) > regex::$sampleLen) {
+                return substr($input, regex::$sampleLenDot) . '...';
             } else {
                 return $input;
             }
@@ -352,17 +397,17 @@ class regex
      *
      * @param integer $len a number greater than 3 [default: 300]
      *
-     * @return boolean TRUE if regex::sample_len is updatedl FALSE
+     * @return boolean TRUE if regex::sample_len is updated. FALSE
      *                 otherwise.
      */
-    public static function set_sample_len($len)
+    public static function setSampleLen($len)
     {
         if (!is_int($len) || $len < 3) {
             // throw
             return false;
         } else {
-            regex::$sample_len = $len;
-            regex::$sample_len_dot = ($len - 3);
+            regex::$sampleLen = $len;
+            regex::$sampleLenDot = ($len - 3);
             return true;
         }
     }
@@ -387,7 +432,7 @@ class regex
      *
      * @return string converted string
      */
-    protected function fix_line_end($input)
+    protected function fixLineEnd($input)
     {
         $find = array(
             '/(?<![^\\\\])\\\\r/',
@@ -411,10 +456,16 @@ class regex
 
 
 /**
- * @class regex_match provides feedback on how a regular expression
+ * RegexMatch provides feedback on how a regular expression
  * will behave when applied to a given string.
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
  */
-class regex_match extends regex
+class RegexMatch extends regex
 {
     /**
      * Regex object type
@@ -443,15 +494,15 @@ class regex_match extends regex
      */
     public function report($sample)
     {
-        $sample_str = $this->valid_input($sample);
+        $sample_str = $this->validInput($sample);
         if ($sample_str !== false) {
             $start = microtime();
             preg_match_all($this->find, $sample, $matches, PREG_SET_ORDER);
             $end = microtime();
-            $time = self::$MicroTime->mt_subtract($start, $end);
+            $time = self::$MicroTime->mtSub($start, $end);
             $count = count($matches);
         } else {
-            $matches = $this->input_errors;
+            $matches = $this->inputErrors;
             $time = '-1';
             $count = -1;
             $sample_str = '';
@@ -467,7 +518,7 @@ class regex_match extends regex
                 'replace' => $this->replace,
                 'type' => $this->type
             ),
-            $this->get_errors()
+            $this->getErrors()
         );
         return $output;
     }
@@ -482,11 +533,17 @@ class regex_match extends regex
 
 
 /**
- * @class regex_replace provides feedback on how a regular expression
+ * RegexReplace provides feedback on how a regular expression
  * and associated replace string will behave when applied to a given
  * string.
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
  */
-class regex_replace extends regex_match
+class RegexReplace extends RegexMatch
 {
     /**
      * Regex object type
@@ -508,14 +565,14 @@ class regex_replace extends regex_match
      *               {integer} 'count'  Number of matches the regex
      *                                  had on the sample
      */
-    public function get_output($sample)
+    public function getOutput($sample)
     {
-        $sample_str = $this->valid_input($sample);
+        $sample_str = $this->validInput($sample);
         if ($sample_str !== false) {
             $start = microtime();
             $output = preg_replace($this->find, $this->replace, $sample, -1, $count);
             $end = microtime();
-            $time = self::$MicroTime->mt_subtract($start, $end);
+            $time = self::$MicroTime->mtSub($start, $end);
         } else {
             $output = $this->errors;
             $time = '-1';
@@ -535,11 +592,26 @@ class regex_replace extends regex_match
 
 
 /**
- * @class regex_error provides feedback on what is wrong with a
- * regular expression
+ * RegexError provides feedback on what is wrong with a regular
+ * expression
+ *
+ * @category RegexTest
+ * @package  RegexTest
+ * @author   Evan Wills <evan.wills@gmail.com>
+ * @license  GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ * @link     https://github.com/evanwills/original-regex-tester
  */
-class regex_error extends regex
+class RegexError extends regex
 {
+    const REGEX_ERROR_MISSING_TERM
+        = '/missing (?:terminating )?([\]\}\)]) .*? offset ([0-9]+)/';
+    const REGEX_ERROR_LOOK_BEHIND
+        = '/lookbehind assertion is not fixed length at offset ([0-9]+)/is';
+    const REGEX_ERROR_NO_END_DELIM
+        = '/No ending (?:matching )?delimiter \'([^\']+)\' found/is';
+    const REGEX_ERROR_BAD_DELIM
+        = '/Delimiter must not be alphanumeric or backslash/i';
+
     /**
      * Regex object type
      *
@@ -576,7 +648,7 @@ class regex_error extends regex
      */
     public function report($sample)
     {
-        $sample_str = $this->valid_input($sample);
+        $sample_str = $this->validInput($sample);
         if ($sample_str === false) {
             $sample_str = '';
         }
@@ -590,7 +662,7 @@ class regex_error extends regex
                 'replace' => $this->replace,
                 'type' => $this->type
             ),
-            $this->get_errors()
+            $this->getErrors()
         );
 
         return $output;
@@ -603,14 +675,14 @@ class regex_error extends regex
      *
      * @return array an array of strings with error messages.
      */
-    public function get_errors()
+    public function getErrors()
     {
         if ($this->_errorProcessed === false) {
             $e_count = count($this->errors) - 1;
             $error = $this->errors[$e_count];
             $error_wrap = array('open' => '', 'close' => '');
 
-            if (preg_match('/missing (?:terminating )?([\]\}\)]) .*? offset ([0-9]+)/', $error, $matches)) {
+            if (preg_match(self::REGEX_ERROR_MISSING_TERM, $error, $matches)) {
                 $bracket = $matches[1];
                 $offset = ++$matches[2];
 
@@ -687,7 +759,7 @@ class regex_error extends regex
                 $this->highlight = $this->_getHighlighted(
                     $matches[1], $matches[2], $matches[3]
                 );
-            } elseif (preg_match('/lookbehind assertion is not fixed length at offset ([0-9]+)/is', $error, $matches)) {
+            } elseif (preg_match(self::REGEX_ERROR_LOOK_BEHIND, $error, $matches)) {
                 $offset = ++$matches[1];
 
                 preg_match('/^(.{' . $offset . '})(.*)$/is', $this->find, $matches);
@@ -698,21 +770,24 @@ class regex_error extends regex
                 $this->highlight = $this->_getHighlighted(
                     $matches[1], $matches[2], $tail
                 );
-            } elseif (preg_match('/No ending (?:matching )?delimiter \'([^\']+)\' found/is', $error, $matches)) {
+            } elseif (preg_match(self::REGEX_ERROR_NO_END_DELIM, $error, $matches)) {
                 $delim = $matches[1];
                 preg_match('/^(.)(.*)$/is', $this->find, $matches);
 
                 $this->highlight = $this->_getHighlighted(
                     $matches[1], $matches[2]
                 );
-            } elseif (preg_match('/Delimiter must not be alphanumeric or backslash/i', $error, $matches)) {
+            } elseif (preg_match(self::REGEX_ERROR_BAD_DELIM, $error, $matches)) {
                 preg_match('/^(.)(.*)$/is', $this->find, $matches);
 
                 $this->highlight = $this->_getHighlighted(
                     $matches[1], $matches[2]
                 );
             } else {
-                $error_wrap = array('open' => '<span class="unknown"', 'close' => '</span>');
+                $error_wrap = array(
+                    'open' => '<span class="unknown"',
+                    'close' => '</span>'
+                );
                 // die(
                 //     'PREG encountered an error I couldn\'t recognise '.
                 //     '(or at least haven\'t seen yet): "'.$error.'"'
@@ -736,9 +811,9 @@ class regex_error extends regex
     /**
      * Whether the object holds a valid regex
      *
-     * @return boolean false (regex_error only contains invalid objects)
+     * @return boolean false (RegexError only contains invalid objects)
      */
-    public function is_valid()
+    public function isValid()
     {
         return false;
     }
@@ -773,5 +848,5 @@ class regex_error extends regex
 
 
 if (!class_exists('MicroTime')) {
-    require dirname(__FILE__) . '/MicroTime.class.php';
+    include dirname(__FILE__) . '/MicroTime.class.php';
 }

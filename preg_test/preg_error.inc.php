@@ -1,8 +1,8 @@
 <?php
 /**
- * @function preg_is_valid() tests a regular expression to see if it
+ * @function preg_isValid() tests a regular expression to see if it
  * is valid
- * 
+ *
  * @param string $regex Regular expression to be tested
  * @param boolean $show_error If true, the error message is returned,
  *	  otherwise boolean is returned
@@ -14,7 +14,7 @@
 /*
 if( function_exists('preg_last_error') )
 {
-	function preg_is_valid( $regex , $show_error = false )
+	function preg_isValid( $regex , $show_error = false )
 	{
 		@preg_match($regex,'');
 		$error = preg_last_error();
@@ -37,7 +37,7 @@ if( function_exists('preg_last_error') )
 }
 else
 {
-*/	function preg_is_valid( $regex , $show_error = false )
+*/	function preg_isValid( $regex , $show_error = false )
 	{
 		if($old_track_errors = ini_get('track_errors'))
 		{
@@ -56,7 +56,7 @@ else
 		{
 			$output = false;
 		}
-	
+
 		if($old_track_errors)
 		{
 			$php_errormsg = isset($old_php_errormsg)?$old_php_errormsg:false;
